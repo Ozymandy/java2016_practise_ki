@@ -22,4 +22,7 @@ public class Order {
         return "Customer " + customer.getFirstName() + " "+ customer.
                 getSecondName() + " ordered " + products.size() + " items";
     }
+    public Customer getCustomer(){
+        return this.customer;
+    }
 }
