@@ -19,4 +19,13 @@ public class DataContainer {
         orders = new ArrayList<Order>();
         products = new ArrayList<Product>();
     }
+    public List<Order> searchBySecondName(String keyword){
+        List<Order> temp = new ArrayList<Order>();
+        for(Order order:orders){
+            if(order.getCustomer().getSecondName().contains(keyword)){
+                temp.add(order);
+            }
+        }
+        return temp;
+    }
 }

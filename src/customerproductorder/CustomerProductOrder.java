@@ -25,8 +25,12 @@ public class CustomerProductOrder {
         container.products.add(new Product("Ball",15,1));
         container.products.add(new Product("Coke",12,3));
         container.products.add(new Product("Hamburger",100,5));
+        container.orders.add(new Order(container.customers.get(2),container.products));
         for(Customer customer:container.customers){
             System.out.println(customer);
+        }
+        for(Order order:container.searchBySecondName("Slutsky")){
+            System.out.println(order);
         }
     }
     
