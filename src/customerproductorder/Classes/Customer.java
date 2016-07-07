@@ -1,38 +1,31 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package customerproductorder.Classes;
 
-/**
- *
- * @author AS
- */
+
 public class Customer implements Comparable {
     private String firstName;
-    private String secondName;
+    private String lastName;
     private String address;
     private String cardNumber;
-    //private final int customerID; //have to be readonly
-    public Customer(String firstName, String secondName, String address, 
+
+    public Customer(String firstName, String lastName, String address, 
             String cardNumber){
         this.firstName = firstName;
-        this.secondName = secondName;
+        this.lastName = lastName;
         this.address = address;
         this.cardNumber = cardNumber;
     }
     @Override
     public String toString(){
-        return "It's "+this.firstName + " " + this.secondName + 
+        return "It's "+this.firstName + " " + this.lastName + 
                 " with cardNumber "+ this.cardNumber + " living by address " 
                 + this.address;
     }
     public String getFirstName(){
         return this.firstName;
     }
-    public String getSecondName(){
-        return this.secondName;
+    public String getLastName(){
+        return this.lastName;
     }
     public String getAddress(){
         return this.address;
@@ -42,6 +35,6 @@ public class Customer implements Comparable {
     }
     @Override
     public int compareTo(Object t) {
-        return this.getSecondName().compareTo(((Customer)t).getSecondName());
+        return this.getLastName().compareTo(((Customer)t).getLastName());
     }
 }
