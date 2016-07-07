@@ -3,7 +3,6 @@ EPAM Practice 2016
 Domain
 ------
 Customer/Product/Order
------
 Task01
 ------
 Create command line application that will prints Customer Information. Example output:
@@ -11,3 +10,5 @@ Create command line application that will prints Customer Information. Example o
 
 Task02
 -------
+Implement searching orders by one customer. Example:
+>It's Constantine Ihnatsenka ordered 4 items
