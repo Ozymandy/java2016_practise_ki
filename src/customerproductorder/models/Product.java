@@ -1,7 +1,7 @@
 
-package customerproductorder.Classes;
+package customerproductorder.models;
 
-public class Product implements Comparable{
+public class Product implements NameGetable{
     private String productName;
     private int productCost;
     private int productID;
@@ -14,22 +14,11 @@ public class Product implements Comparable{
     public String toString(){
         return super.toString();
     }
-    public String getProductName(){
-        return this.productName;
-    }
     public int getProductCost(){
         return this.productCost;
     }
     @Override
-    public int compareTo(Object t) {
-       if(this.getProductCost()>((Product)t).getProductCost()){
-           return 1;
-       }
-       if(this.getProductCost()<((Product)t).getProductCost()){
-           return -1;
-       }
-       else{
-           return 0;
-       }
+    public String getName() {
+        return productName;
     }
 }

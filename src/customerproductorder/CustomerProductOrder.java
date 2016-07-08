@@ -1,7 +1,10 @@
 
 package customerproductorder;
+import customerproductorder.models.Order;
+import customerproductorder.models.Product;
+import customerproductorder.models.Customer;
+import customerproductorder.models.comparators.ModelComparator;
 import java.util.*;
-import customerproductorder.Classes.*;
 
 public class CustomerProductOrder {
 
@@ -19,6 +22,7 @@ public class CustomerProductOrder {
         container.products.add(new Product("Coke",12,3));
         container.products.add(new Product("Hamburger",100,5));
         container.orders.add(new Order(container.customers.get(2),container.products));
+        Collections.sort(container.customers,new ModelComparator());
         for(Customer customer:container.customers){
             System.out.println(customer);
         }

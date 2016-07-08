@@ -1,7 +1,9 @@
 
 package customerproductorder;
+import customerproductorder.models.Order;
+import customerproductorder.models.Product;
+import customerproductorder.models.Customer;
 import java.util.*;
-import customerproductorder.Classes.*;
 
 public class DataContainer {
     public List<Customer> customers;
@@ -15,7 +17,7 @@ public class DataContainer {
     public List<Order> searchBySecondName(String keyword){
         List<Order> temp = new ArrayList<Order>();
         for(Order order:orders){
-            if(order.getCustomer().getLastName().contains(keyword)){
+            if(order.getCustomer().getName().contains(keyword)){
                 temp.add(order);
             }
         }

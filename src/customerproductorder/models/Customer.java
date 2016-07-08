@@ -1,8 +1,8 @@
 
-package customerproductorder.Classes;
+package customerproductorder.models;
 
 
-public class Customer implements Comparable {
+public class Customer implements NameGetable {
     private String firstName;
     private String lastName;
     private String address;
@@ -24,17 +24,16 @@ public class Customer implements Comparable {
     public String getFirstName(){
         return this.firstName;
     }
-    public String getLastName(){
-        return this.lastName;
-    }
     public String getAddress(){
         return this.address;
     }
     public String getcardNumber(){
         return this.cardNumber;
     }
+
     @Override
-    public int compareTo(Object t) {
-        return this.getLastName().compareTo(((Customer)t).getLastName());
+    public String getName() {
+        return lastName;
     }
+
 }
