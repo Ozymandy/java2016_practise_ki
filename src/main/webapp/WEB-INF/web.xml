@@ -5,12 +5,12 @@
          version="3.0">
  
     <servlet>
-        <servlet-name>Hello</servlet-name>
-        <servlet-class>servlets.Hello</servlet-class>
+        <servlet-name>HelloServlet</servlet-name>
+        <servlet-class>customerproductorder.web.HelloServlet</servlet-class>
     </servlet>
  
     <servlet-mapping>
-        <servlet-name>Hello</servlet-name>
+        <servlet-name>HelloServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
  
