@@ -1,5 +1,5 @@
 
-package customerproductorder.Classes;
+package customerproductorder.models;
 import java.util.*;
 
 public class Order {
@@ -13,7 +13,7 @@ public class Order {
     @Override
     public String toString(){
         return "Customer " + customer.getFirstName() + " "+ customer.
-                getLastName() + " ordered " + products.size() + " items";
+                getName() + " ordered " + products.size() + " items";
     }
     public Customer getCustomer(){
         return this.customer;
