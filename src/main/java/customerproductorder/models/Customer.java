@@ -20,7 +20,7 @@ public class Customer implements NameGetable {
     /**
      * Field which card Number.
      */
-    private String cardNumber;
+    private int cardNumber;
 
     /**
      * Ctor
@@ -31,7 +31,7 @@ public class Customer implements NameGetable {
      * @param cardNumber
      */
     public Customer(String firstName, String lastName, String address,
-            String cardNumber) {
+            int cardNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -71,7 +71,7 @@ public class Customer implements NameGetable {
      *
      * @return card Number
      */
-    public String getcardNumber() {
+    public int getCardNumber() {
         return this.cardNumber;
     }
 
@@ -84,5 +84,5 @@ public class Customer implements NameGetable {
     public String getName() {
         return lastName;
     }
-
+    
 }

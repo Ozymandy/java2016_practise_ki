@@ -8,10 +8,53 @@
         <servlet-name>HelloServlet</servlet-name>
         <servlet-class>customerproductorder.web.HelloServlet</servlet-class>
     </servlet>
- 
     <servlet-mapping>
         <servlet-name>HelloServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
- 
+    
+     <servlet>
+        <servlet-name>CustomersServlet</servlet-name>
+        <servlet-class>customerproductorder.web.CustomersServlet</servlet-class>
+     </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomersServlet</servlet-name>
+        <url-pattern>/list</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>TestServlet</servlet-name>
+        <servlet-class>customerproductorder.web.TestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TestServlet</servlet-name>
+        <url-pattern>/test</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>CustomerEditServlet</servlet-name>
+        <servlet-class>customerproductorder.web.CustomerEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerEditServlet</servlet-name>
+        <url-pattern>/edit</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>NewCustomerServlet</servlet-name>
+        <servlet-class>customerproductorder.web.NewCustomerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NewCustomerServlet</servlet-name>
+        <url-pattern>/new</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>SearchServlet</servlet-name>
+        <servlet-class>customerproductorder.web.SearchServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/search</url-pattern>
+    </servlet-mapping>
 </web-app>

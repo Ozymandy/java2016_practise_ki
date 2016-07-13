@@ -3,8 +3,10 @@ package customerproductorder;
 import customerproductorder.models.Order;
 import customerproductorder.models.Product;
 import customerproductorder.models.Customer;
+import customerproductorder.models.comparators.ModelComparator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * <
@@ -18,17 +20,15 @@ public class DataContainer {
      * List of customers.</p>
      */
     private List<Customer> customers;
-
+    public static DataContainer instance = new DataContainer();
     /**
-     * <
-     * p>
+     * <p>
      * Product list.</p>
      */
     private List<Product> products;
 
     /**
-     * <
-     * p>
+     * < p>
      * Order list.</p>
      */
     private List<Order> orders;
@@ -38,10 +38,24 @@ public class DataContainer {
      * Ctor of the class. Here we initialize fields when we store information of
      * our customers, orders and products.</p>
      */
-    public DataContainer() {
-        customers = new ArrayList<Customer>();
-        orders = new ArrayList<Order>();
-        products = new ArrayList<Product>();
+    private DataContainer() {
+        this.customers = new ArrayList<Customer>();
+        this.orders = new ArrayList<Order>();
+        this.products = new ArrayList<Product>();
+        this.customers.add(new Customer("Constantine", "Ihnatsenka",
+                "Krinichnaya st. 8-10", 1));
+        this.customers.add(new Customer("Eugene", "Sergeev",
+                "Pushkina st. 1-10", 2));
+        this.customers.add(new Customer("Leonid", "Slutsky",
+                "Lenina st.", 3));
+        this.customers.add(new Customer("Marco", "Reus",
+                "Pervomayskaya st.", 4));
+        this.products.add(new Product("Ball", 15, 1));
+        this.products.add(new Product("Coke", 12, 3));
+        this.products.add(new Product("Hamburger", 100, 5));
+        this.orders.add(new Order(customers.get(2),
+                products));
+        Collections.sort(customers, new ModelComparator());
     }
 
     /**
@@ -56,6 +70,17 @@ public class DataContainer {
         for (Order order : orders) {
             if (order.getCustomer().getName().contains(keyword)) {
                 temp.add(order);
+            }
+        }
+        return temp;
+    }
+
+    public final Customer searchCustomerByCardId(int CardId) {
+        Customer temp = null;
+        for (Customer customer : customers) {
+            if (customer.getCardNumber() == CardId) {
+                temp = customer;
+                break;
             }
         }
         return temp;
