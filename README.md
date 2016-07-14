@@ -29,7 +29,7 @@ Task05
 -------
 Create pages for displaying information about books and editing/creating books:
 GET   /list - shows page with the list of Books
-GET   /edit?cardId={cardId} - shows edits form for editing book. If {bookId == 'new'} - происходит создание книги.
+GET   /edit?cardId={cardId} - shows edits form for editing customers. If {cardId == 'new'} - new Customer.
 POST /edit?cardId={cardId} - handles edits form and redirects to page List of Books
 GET  /search - shows page with the filtered list of books 
 Extract application logic into Service tier
