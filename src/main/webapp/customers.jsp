@@ -12,7 +12,7 @@
         </h1>
 <ul>
 <c:forEach var='item' items='${requestScope.customers}' varStatus='counter'>
-  <li> <c:out value='${item.toString()}'/> <a href="/edit?cardId=${item.getCardNumber()}">Edit</a></li>
+  <li> <c:out value='${item.toString()}'/> <a href="edit?cardId=${item.getCardNumber()}">Edit</a></li>
 </c:forEach>
 </ul>
     </body>

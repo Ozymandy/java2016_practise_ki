@@ -18,7 +18,7 @@ public class Customer implements NameGetable {
      */
     private String address;
     /**
-     * Field which card Number.
+     * Field which contains card Number.
      */
     private int cardNumber;
 
@@ -84,5 +84,5 @@ public class Customer implements NameGetable {
     public String getName() {
         return lastName;
     }
-    
+
 }

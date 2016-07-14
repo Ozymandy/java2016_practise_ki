@@ -16,27 +16,23 @@ import java.util.Collections;
 public class DataContainer {
 
     /**
-     * <p>
-     * List of customers.</p>
+     * List of customers.
      */
     private List<Customer> customers;
-    public static DataContainer instance = new DataContainer();
+    private static final DataContainer instance = new DataContainer();
     /**
-     * <p>
-     * Product list.</p>
+     * Product list.
      */
     private List<Product> products;
 
     /**
-     * < p>
-     * Order list.</p>
+     * Order list.
      */
     private List<Order> orders;
 
     /**
-     * <p>
      * Ctor of the class. Here we initialize fields when we store information of
-     * our customers, orders and products.</p>
+     * our customers, orders and products.
      */
     private DataContainer() {
         this.customers = new ArrayList<Customer>();
@@ -59,8 +55,7 @@ public class DataContainer {
     }
 
     /**
-     * <p>
-     * Method which search orders by customers.</p>
+     * Method which search orders by customers.
      *
      * @param keyword Search keyword to search by customer's last name
      * @return list of the found orders by customer
@@ -75,10 +70,10 @@ public class DataContainer {
         return temp;
     }
 
-    public final Customer searchCustomerByCardId(int CardId) {
+    public final Customer searchCustomerByCardId(int cardId) {
         Customer temp = null;
         for (Customer customer : customers) {
-            if (customer.getCardNumber() == CardId) {
+            if (customer.getCardNumber() == cardId) {
                 temp = customer;
                 break;
             }
@@ -111,5 +106,9 @@ public class DataContainer {
      */
     public List<Product> getProducts() {
         return products;
+    }
+
+    public static DataContainer getInstance() {
+        return instance;
     }
 }

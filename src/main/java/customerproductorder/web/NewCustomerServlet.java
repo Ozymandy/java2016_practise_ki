@@ -7,22 +7,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import javax.servlet.http.HttpSession;
 
-/**
- * This class provide us using servlets.
- */
 public class NewCustomerServlet extends HttpServlet {
 
-    /**
-     * This method is called when we send get to server.
-     */
-    private int cardId;
-    private static DataContainer container = DataContainer.instance;
+    private static DataContainer dataContainer = DataContainer.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        cardId = Integer.parseInt(req.getParameter("cardId"));
+            throws ServletException, IOException, NumberFormatException {
+        int cardId = Integer.parseInt(req.getParameter("cardId"));
+        HttpSession session = req.getSession();
+        session.setAttribute("cardId", cardId);
         getServletContext().getRequestDispatcher("/new.jsp").forward(req,
                 resp);
     }
@@ -30,12 +26,14 @@ public class NewCustomerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        container.getCustomers().add(this.addCustomer(req));
+        dataContainer.getCustomers().add(this.addCustomer(req));
         resp.sendRedirect("list");
 
     }
 
     private Customer addCustomer(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        int cardId = (Integer)session.getAttribute("cardId");
         Customer customer = new Customer(req.getParameter("firstName"),
                 req.getParameter("lastName"), req.getParameter("address"),
                 cardId);

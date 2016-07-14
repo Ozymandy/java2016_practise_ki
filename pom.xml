@@ -47,6 +47,6 @@
         <logback.version>1.0.1</logback.version>
     </properties>
     <build>
-        <finalName>Application</finalName>
+        <finalName>CustomerApplication</finalName>
     </build>
 </project>

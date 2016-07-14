@@ -7,25 +7,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import customerproductorder.DataContainer;
 
-/**
- * This class provide us using servlets.
- */
 public class CustomersServlet extends HttpServlet {
 
-    /**
-     * This method is called when we send get to server.
-     */
-    private static final DataContainer container = DataContainer.instance;
-
-    public CustomersServlet() {
-        super();
-
-    }
+    private static final DataContainer dataContainer = DataContainer.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        req.setAttribute("customers", container.getCustomers());
+        req.setAttribute("customers", dataContainer.getCustomers());
         getServletContext().getRequestDispatcher("/customers.jsp").forward(req, resp);
 
     }

@@ -7,14 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/**
- * This class provide us using servlets.
- */
 public class TestServlet extends HttpServlet {
 
-    /**
-     * This method is called when we send get to server.
-     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {

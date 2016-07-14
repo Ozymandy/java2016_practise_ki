@@ -1,7 +1,4 @@
-
-
 package customerproductorder.web;
-
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,12 +9,11 @@ import java.io.PrintWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-     /**
-    * This class provide us using servlets.
-    */
+
 public class HelloServlet extends HttpServlet {
-         /** This method is called when we send get to server.*/
-    private static final Logger LOG =  LoggerFactory.getLogger(HelloServlet.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(HelloServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -27,4 +23,3 @@ public class HelloServlet extends HttpServlet {
 
     }
 }
-
