@@ -1,5 +1,6 @@
 package customerproductorder.models;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,6 +16,14 @@ public class Order {
      * Class that contains products of this order.
      */
     private List<Product> products;
+    /**
+     * Unique id
+     */
+    private int id;
+    /**
+     * OrderDate
+     */
+    private Date orderDate;
 
     /**
      * Ctor.
@@ -22,9 +31,11 @@ public class Order {
      * @param customer
      * @param products
      */
-    public Order(Customer customer, List<Product> products) {
+    public Order(Customer customer, List<Product> products, int id, Date orderDate) {
         this.products = products;
         this.customer = customer;
+        this.id = id;
+        this.orderDate = orderDate;
     }
 
     /**
@@ -45,5 +56,17 @@ public class Order {
      */
     public Customer getCustomer() {
         return this.customer;
+    }
+
+    public List<Product> getProducts() {
+        return this.products;
+    }
+
+    public int getOrderId() {
+        return this.id;
+    }
+
+    public Date getOrderDate() {
+        return this.orderDate;
     }
 }

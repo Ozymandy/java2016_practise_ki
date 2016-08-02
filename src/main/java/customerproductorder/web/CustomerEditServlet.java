@@ -5,27 +5,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import customerproductorder.DataContainer;
 import customerproductorder.models.Customer;
+import dao.DaoException;
 import javax.servlet.http.HttpSession;
+import services.customer.CustomerService;
 
 public class CustomerEditServlet extends HttpServlet {
 
-    private static final DataContainer dataContainer = DataContainer.getInstance();
+    private static final CustomerService service = CustomerService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         int cardId = Integer.parseInt(req.getParameter("cardId"));
-        Customer editCustomer = dataContainer.searchCustomerByCardId(cardId);
-        HttpSession session = req.getSession(true);
-        session.setAttribute("editCustomer", editCustomer);
-        if (editCustomer != null) {
-            req.setAttribute("customer", editCustomer);
-            getServletContext().getRequestDispatcher("/edit.jsp").forward(req,
-                    resp);
-        } else {
-            req.getRequestDispatcher("/new").forward(req, resp);
+        Customer editCustomer;
+        try {
+            editCustomer = service.get(cardId);
+            HttpSession session = req.getSession(true);
+            session.setAttribute("editCustomerId", cardId);
+            if (editCustomer != null) {
+                req.setAttribute("customer", editCustomer);
+                getServletContext().getRequestDispatcher("/edit.jsp").forward(req,
+                        resp);
+            } else {
+                req.getRequestDispatcher("/new").forward(req, resp);
+            }
+        } catch (DaoException ex) {
+
         }
     }
 
@@ -39,10 +45,12 @@ public class CustomerEditServlet extends HttpServlet {
 
     private void saveCustomer(HttpServletRequest req) {
         HttpSession session = req.getSession(true);
-        Customer customer = (Customer) session.getAttribute("editCustomer");
-        int index = dataContainer.getCustomers().indexOf(customer);
-        dataContainer.getCustomers().set(index, new Customer(req.getParameter("firstName"),
-                req.getParameter("lastName"), req.getParameter("address"),
-                customer.getCardNumber()));
+        int id = (Integer)session.getAttribute("editCustomerId");
+        try{
+        service.save(new Customer(req.getParameter("firstName"),
+                req.getParameter("lastName"), req.getParameter("address"),id));}
+        catch(DaoException e){
+            
+        }
     }
 }

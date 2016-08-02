@@ -59,4 +59,8 @@ public class Product implements NameGetable {
     public String getName() {
         return productName;
     }
+
+    public int getProductId() {
+        return productID;
+    }
 }
