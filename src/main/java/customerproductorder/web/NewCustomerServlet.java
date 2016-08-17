@@ -31,7 +31,7 @@ public class NewCustomerServlet extends HttpServlet {
                     req.getParameter("lastName"), req.getParameter("address")));
             resp.sendRedirect("list");
         } catch (DaoException e) {
-
+            resp.sendRedirect("error.jsp");
         }
 
     }

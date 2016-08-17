@@ -25,8 +25,9 @@ public class H2ProductDao implements ProductDaoInterface {
             st.setString(1, newProduct.getName());
             st.setInt(1, newProduct.getProductCost());
             st.executeUpdate();
+            connectionProvider.destroy();
         } catch (SQLException ex) {
-            throw new DaoException("Database connection error", ex);
+            throw new DaoException("Inserting data error", ex);
         }
     }
 
@@ -39,8 +40,9 @@ public class H2ProductDao implements ProductDaoInterface {
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             gotProduct = this.convertToProduct(rs).get(0);
+            connectionProvider.destroy();
         } catch (SQLException ex) {
-            throw new DaoException("Database connection error", ex);
+            throw new DaoException("Getting data error", ex);
         }
         return gotProduct;
     }
@@ -53,8 +55,9 @@ public class H2ProductDao implements ProductDaoInterface {
                             + ".product");
             ResultSet rs = st.executeQuery();
             list = this.convertToProduct(rs);
+            connectionProvider.destroy();
         } catch (SQLException ex) {
-            throw new DaoException("Database connection error", ex);
+            throw new DaoException("Getting data error", ex);
         }
         return list;
     }
@@ -66,8 +69,9 @@ public class H2ProductDao implements ProductDaoInterface {
                             + ".product where id=?");
             st.setInt(1, id);
             st.executeUpdate();
+            connectionProvider.destroy();
         } catch (SQLException ex) {
-            throw new DaoException("Database connection error", ex);
+            throw new DaoException("Deleting data error", ex);
         }
     }
 
@@ -79,8 +83,9 @@ public class H2ProductDao implements ProductDaoInterface {
             st.setInt(1, changedProduct.getProductCost());
             st.setInt(2, changedProduct.getProductId());
             st.executeUpdate();
+            connectionProvider.destroy();
         } catch (SQLException ex) {
-            throw new DaoException("Database connection error", ex);
+            throw new DaoException("Saving error", ex);
         }
     }
 

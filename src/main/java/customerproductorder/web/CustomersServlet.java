@@ -24,7 +24,7 @@ public class CustomersServlet extends HttpServlet {
             getServletContext().getRequestDispatcher("/customers.jsp")
                     .forward(req, resp);
         } catch (DaoException e) {
-            throw new ServletException(e);
+            resp.sendRedirect("error.jsp");
         }
     }
 }

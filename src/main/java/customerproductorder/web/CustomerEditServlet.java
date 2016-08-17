@@ -31,26 +31,25 @@ public class CustomerEditServlet extends HttpServlet {
                 req.getRequestDispatcher("/new").forward(req, resp);
             }
         } catch (DaoException ex) {
-
+            resp.sendRedirect("error.jsp");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        try{
         saveCustomer(req);
-        resp.sendRedirect("list");
+        resp.sendRedirect("list");}
+        catch(DaoException e){
+            resp.sendRedirect("error.jsp");
+        }
 
     }
 
-    private void saveCustomer(HttpServletRequest req) {
+    private void saveCustomer(HttpServletRequest req) throws DaoException{
         HttpSession session = req.getSession(true);
         int id = (Integer)session.getAttribute("editCustomerId");
-        try{
         service.save(new Customer(req.getParameter("firstName"),
                 req.getParameter("lastName"), req.getParameter("address"),id));}
-        catch(DaoException e){
-            
-        }
-    }
 }

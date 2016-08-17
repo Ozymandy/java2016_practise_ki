@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class H2CustomerDao implements CustomerDaoInterface {
-    
+
     private final ConnectionProvider connectionProvider;
-    
+
     protected H2CustomerDao(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
-    
+
     public void create(Customer newCustomer) throws DaoException {
         try {
             PreparedStatement st = connectionProvider.getConnection()
@@ -27,11 +27,12 @@ public class H2CustomerDao implements CustomerDaoInterface {
             st.setString(2, newCustomer.getName());
             st.setString(3, newCustomer.getAddress());
             st.executeUpdate();
+            connectionProvider.destroy();
         } catch (SQLException e) {
-            throw new DaoException("Database connection error", e);
+            throw new DaoException("Inserting data error", e);
         }
     }
-    
+
     public Customer get(int id) throws DaoException {
         Customer gotCustomer = null;
         try {
@@ -41,13 +42,14 @@ public class H2CustomerDao implements CustomerDaoInterface {
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             gotCustomer = this.convertToCustomer(rs).get(0);
+            connectionProvider.destroy();
         } catch (SQLException e) {
-            throw new DaoException("Database connection error", e);
+            throw new DaoException("Selection data error", e);
         }
         return gotCustomer;
         //Better way to return in finally with Optional. Later
     }
-    
+
     public List<Customer> getAll() throws DaoException {
         List<Customer> set = new ArrayList<Customer>();
         try {
@@ -56,12 +58,13 @@ public class H2CustomerDao implements CustomerDaoInterface {
                             + ".customer");
             ResultSet rs = st.executeQuery();
             set = this.convertToCustomer(rs);
+            connectionProvider.destroy();
         } catch (SQLException e) {
             throw new DaoException("Database connection error", e);
         }
         return set;
     }
-    
+
     public void delete(int id) throws DaoException {
         try {
             PreparedStatement st = connectionProvider.getConnection()
@@ -69,11 +72,12 @@ public class H2CustomerDao implements CustomerDaoInterface {
                             + ".customer where id=?");
             st.setInt(1, id);
             st.executeUpdate();
+            connectionProvider.destroy();
         } catch (SQLException e) {
-            throw new DaoException("Database connection error", e);
+            throw new DaoException("Deleting data error", e);
         }
     }
-    
+
     public void save(Customer changedCustomer) throws DaoException {
         try {
             PreparedStatement st = connectionProvider.getConnection()
@@ -85,11 +89,12 @@ public class H2CustomerDao implements CustomerDaoInterface {
             st.setString(3, changedCustomer.getAddress());
             st.setInt(4, changedCustomer.getCardNumber());
             st.executeUpdate();
+            connectionProvider.destroy();
         } catch (SQLException e) {
-            throw new DaoException("Database connection error", e);
+            throw new DaoException("Saving data error", e);
         }
     }
-    
+
     private List<Customer> convertToCustomer(ResultSet rs) throws SQLException {
         List list = new ArrayList<Customer>();
         while (rs.next()) {

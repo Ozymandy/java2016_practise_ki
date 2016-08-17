@@ -3,11 +3,11 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
- <listener>
-    <listener-class>
-     customerproductorder.web.AppContextListener
-    </listener-class>
-  </listener>
+    <listener>
+        <listener-class>
+            customerproductorder.web.AppContextListener
+        </listener-class>
+    </listener>
     <servlet>
         <servlet-name>HelloServlet</servlet-name>
         <servlet-class>customerproductorder.web.HelloServlet</servlet-class>
@@ -17,10 +17,10 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     
-     <servlet>
+    <servlet>
         <servlet-name>CustomersServlet</servlet-name>
         <servlet-class>customerproductorder.web.CustomersServlet</servlet-class>
-     </servlet>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CustomersServlet</servlet-name>
         <url-pattern>/list</url-pattern>
