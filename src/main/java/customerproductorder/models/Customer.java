@@ -38,6 +38,12 @@ public class Customer implements NameGetable {
         this.cardNumber = cardNumber;
     }
 
+    public Customer(String firstName, String lastName, String address) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+    }
+
     /**
      * Our implementation of toString().
      *
