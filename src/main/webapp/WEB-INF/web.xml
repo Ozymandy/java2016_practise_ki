@@ -34,7 +34,22 @@
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/test</url-pattern>
     </servlet-mapping>
-    
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>customerproductorder.web.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>customerproductorder.web.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>CustomerEditServlet</servlet-name>
         <servlet-class>customerproductorder.web.CustomerEditServlet</servlet-class>
@@ -61,4 +76,14 @@
         <servlet-name>SearchServlet</servlet-name>
         <url-pattern>/search</url-pattern>
     </servlet-mapping>
+    <filter>
+        <filter-name>LoginFilter</filter-name> 
+        <filter-class>customerproductorder.web.filters.LoginFilter</filter-class> 
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name> 
+        <url-pattern>/*</url-pattern> 
+        <servlet-name>LoginServlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
 </web-app>

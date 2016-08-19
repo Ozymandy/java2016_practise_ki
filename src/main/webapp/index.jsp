@@ -2,21 +2,12 @@
 <html>
     <head>
         <title>
-            CustomersList
+            CustomerApplication
         </title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
     </head>
  
     <body>
-        <h1>
-            Edit Customer 
-        </h1>
-<form action="edit" method="POST">
-First Name: <input type="text" name="firstName" value="${requestScope.customer.getFirstName()}"/>
-<br />
-Last Name: <input type="text" name="lastName" value="${requestScope.customer.getName()}"/>
-<br />
-Adress: <input type="text" name="address" value="${requestScope.customer.getAddress()}"/>
-<input type="submit" value="Save" />
-</form>
+    <%@ include file="header.jsp" %>
     </body>
 </html>

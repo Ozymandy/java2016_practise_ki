@@ -47,7 +47,6 @@ public class H2CustomerDao implements CustomerDaoInterface {
             throw new DaoException("Selection data error", e);
         }
         return gotCustomer;
-        //Better way to return in finally with Optional. Later
     }
 
     public List<Customer> getAll() throws DaoException {
@@ -82,8 +81,8 @@ public class H2CustomerDao implements CustomerDaoInterface {
         try {
             PreparedStatement st = connectionProvider.getConnection()
                     .prepareStatement("update customerapplication"
-                            + ".customer set firstname=? "
-                            + "lastname=? address=? where id=?");
+                            + ".customer set firstname=?,"
+                            + "lastname=?,address=? where id=?");
             st.setString(1, changedCustomer.getFirstName());
             st.setString(2, changedCustomer.getName());
             st.setString(3, changedCustomer.getAddress());

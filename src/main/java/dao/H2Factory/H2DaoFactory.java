@@ -4,6 +4,7 @@ import dao.CustomerDaoInterface;
 import dao.DaoFactory;
 import dao.OrderDaoInterface;
 import dao.ProductDaoInterface;
+import dao.UserDaoInterface;
 
 public class H2DaoFactory implements DaoFactory {
 
@@ -27,9 +28,13 @@ public class H2DaoFactory implements DaoFactory {
                 new H2CustomerDao(connectionProvider));
     }
 
+    public UserDaoInterface getUserDao() {
+        return new H2UserDao(connectionProvider);
+    }
+
     public static H2DaoFactory getInstance() {
-        if(instance==null){
-            instance=new H2DaoFactory();
+        if (instance == null) {
+            instance = new H2DaoFactory();
         }
         return instance;
     }

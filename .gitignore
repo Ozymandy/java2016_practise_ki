@@ -14,3 +14,6 @@ genfiles.properties
 project.properties
 project.xml
 /nbactions.xml
+/src/main/java/customerproductorder/web/TestServlet.java
+/src/main/java/customerproductorder/web/HelloServlet.java
+/nb-configuration.xml
