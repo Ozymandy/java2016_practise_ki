@@ -5,6 +5,7 @@ import customerproductorder.models.Order;
 import customerproductorder.models.Product;
 import dao.CustomerDaoInterface;
 import dao.DaoException;
+import dao.H2Factory.converters.ProductConverter;
 import dao.OrderDaoInterface;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,20 +13,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class H2OrderDao implements OrderDaoInterface {
 
     private final ConnectionProvider connectionProvider;
     private final CustomerDaoInterface customerDao;
+    private static final Logger LOG = LoggerFactory.getLogger(H2OrderDao.class);
+    private final ProductConverter productConverter;
 
     protected H2OrderDao(ConnectionProvider connectionProvider,
             CustomerDaoInterface customerDao) {
         this.connectionProvider = connectionProvider;
         this.customerDao = customerDao;
+        productConverter = ProductConverter.getInstance();
     }
 
     public void create(Order newOrder) throws DaoException {
-        //TODO Try with resources
         try {
             PreparedStatement st = connectionProvider.getConnection()
                     .prepareStatement("insert into customerapplication."
@@ -48,8 +53,9 @@ public class H2OrderDao implements OrderDaoInterface {
                 st.executeUpdate();
                 connectionProvider.destroy();
             }
-        } catch (Exception e) {
-            throw new DaoException("Inserting data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Inserting data error", ex);
         }
     }
 
@@ -62,8 +68,9 @@ public class H2OrderDao implements OrderDaoInterface {
             ResultSet rs = st.executeQuery();
             list = this.convertToOrder(rs);
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Getting data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Getting data error", ex);
         }
         return list;
     }
@@ -79,8 +86,9 @@ public class H2OrderDao implements OrderDaoInterface {
             st.setInt(2, id);
             st.executeUpdate();
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Deleting data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Deleting data error", ex);
         }
     }
 
@@ -96,8 +104,9 @@ public class H2OrderDao implements OrderDaoInterface {
             st.setInt(3, changedOrder.getOrderId());
             st.executeUpdate();
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Saving error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Saving error", ex);
         }
     }
 
@@ -110,8 +119,9 @@ public class H2OrderDao implements OrderDaoInterface {
             ResultSet rs = st.executeQuery();
             list = this.convertToOrder(rs);
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Getting data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Getting data error", ex);
         }
         return list;
     }
@@ -126,8 +136,9 @@ public class H2OrderDao implements OrderDaoInterface {
             ResultSet rs = st.executeQuery();
             gotOrder = this.convertToOrder(rs).get(0);
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Getting data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Getting data error", ex);
         }
         return gotOrder;
     }
@@ -144,17 +155,12 @@ public class H2OrderDao implements OrderDaoInterface {
                         + "where order_product.productid=?");
         st.setInt(1, orderId);
         ResultSet rs = st.executeQuery();
+        list = productConverter.convert(rs);
         connectionProvider.destroy();
-        while (rs.next()) {
-            int tempId = rs.getInt("id");
-            String tempName = rs.getString("productname");
-            int tempCost = rs.getInt("productcost");
-            list.add(new Product(tempName, tempCost, tempId));
-        }
         return list;
     }
 
-    private List<Order> convertToOrder(ResultSet rs) throws SQLException,DaoException {
+    private List<Order> convertToOrder(ResultSet rs) throws SQLException, DaoException {
         List<Order> list = new ArrayList<Order>();
         while (rs.next()) {
             int tempId = rs.getInt("id");

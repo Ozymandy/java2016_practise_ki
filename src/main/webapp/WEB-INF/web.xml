@@ -7,16 +7,7 @@
         <listener-class>
             customerproductorder.web.AppContextListener
         </listener-class>
-    </listener>
-    <servlet>
-        <servlet-name>HelloServlet</servlet-name>
-        <servlet-class>customerproductorder.web.HelloServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>HelloServlet</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-    
+    </listener>    
     <servlet>
         <servlet-name>CustomersServlet</servlet-name>
         <servlet-class>customerproductorder.web.CustomersServlet</servlet-class>
@@ -26,14 +17,6 @@
         <url-pattern>/list</url-pattern>
     </servlet-mapping>
     
-    <servlet>
-        <servlet-name>TestServlet</servlet-name>
-        <servlet-class>customerproductorder.web.TestServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>TestServlet</servlet-name>
-        <url-pattern>/test</url-pattern>
-    </servlet-mapping>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>customerproductorder.web.LoginServlet</servlet-class>

@@ -7,6 +7,9 @@ import dao.DaoException;
 import dao.H2Factory.H2DaoFactory;
 import dao.OrderDaoInterface;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import services.ServiceException;
 import services.customer.CustomerService;
 import services.customer.CustomerServiceInterface;
 import services.product.ProductService;
@@ -30,7 +33,7 @@ public class OrderService implements OrderServiceInterface {
         return instance;
     }
 
-    public void create(Order newOrder) throws DaoException {
+    public void create(Order newOrder) throws ServiceException {
         Customer dbTempCustomer = customerService.get(newOrder.getCustomer()
                 .getCardNumber());
         Customer tempCustomer = newOrder.getCustomer();
@@ -40,34 +43,59 @@ public class OrderService implements OrderServiceInterface {
                 && tempCustomer.getFirstName() == dbTempCustomer.getFirstName()
                 && tempCustomer.getName() == dbTempCustomer.getName();
         Product tempProduct;
+        try{
         for (Product product : products) {
-            tempProduct = productService.get(product.getProductId());
+                tempProduct = productService.get(product.getProductId());
             isValid = isValid && tempProduct.getName() == product.getName()
                     && tempProduct.getProductCost() == product.getProductCost();
         }
         if (isValid) {
             orderDao.create(newOrder);
+        }}
+        catch(DaoException ex){
+            throw new ServiceException("Creating error",ex);
         }
     }
 
-    public Order get(Customer customer) throws DaoException {
-        return (Order) orderDao.get(customer);
+    @Override
+    public Order get(Customer customer) throws ServiceException {
+        try {
+            return (Order) orderDao.get(customer);
+        } catch (DaoException ex) {
+            throw new ServiceException("Getting error",ex);
+        }
     }
 
-    public List<Order> getAll() throws DaoException {
-        return orderDao.getAll();
+    public List<Order> getAll() throws ServiceException {
+        try {
+            return orderDao.getAll();
+        } catch (DaoException ex) {
+            throw new ServiceException("Getting error",ex);
+        }
 
     }
 
-    public void delete(int id) throws DaoException {
-        orderDao.delete(id);
+    public void delete(int id) throws ServiceException {
+        try {
+            orderDao.delete(id);
+        } catch (DaoException ex) {
+            throw new ServiceException("Deleting error",ex);
+        }
     }
 
-    public void save(Order changedOrder) throws DaoException {
-        orderDao.save(changedOrder);
+    public void save(Order changedOrder) throws ServiceException {
+        try {
+            orderDao.save(changedOrder);
+        } catch (DaoException ex) {
+            throw new ServiceException("Saving error",ex);
+        }
     }
 
-    public Order get(int id) throws DaoException {
-        return (Order) orderDao.get(id);
+    public Order get(int id) throws ServiceException {
+        try {
+            return (Order) orderDao.get(id);
+        } catch (DaoException ex) {
+            throw new ServiceException("Getting error",ex);
+        }
     }
 }

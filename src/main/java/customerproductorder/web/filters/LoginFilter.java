@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 public class LoginFilter implements Filter {
 
-    private ServletContext context;
     private static final Logger LOG = LoggerFactory.getLogger(LoginFilter.class);
 
     public void init(FilterConfig fConfig) throws ServletException {

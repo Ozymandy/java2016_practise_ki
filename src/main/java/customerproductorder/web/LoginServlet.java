@@ -12,40 +12,44 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.Encryption.MD5EncryptService;
+import services.ServiceException;
 import services.users.UserService;
 import services.users.UserServiceInterface;
 
 public class LoginServlet extends HttpServlet {
-
+    
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
     private static final UserServiceInterface userService = UserService
             .getInstance();
-
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         getServletContext().getRequestDispatcher("/login.jsp")
                 .forward(req, resp);
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest req,
             HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("user");
         String password = req.getParameter("password");
-
+        int minutes = 30;
+        int seconds = 60;
         User user = new User(username, password);
         try {
             if (userService.isValid(user)) {
                 HttpSession session = req.getSession();
                 session.setAttribute("user", username);
-                session.setMaxInactiveInterval(30 * 60);
+                session.setMaxInactiveInterval(minutes * seconds);
                 resp.sendRedirect("customers.jsp");
+            } else {
+                resp.sendRedirect("loginerror.jsp");
             }
-        } catch (DaoException ex) {
+        } catch (ServiceException ex) {
             resp.sendRedirect("error.jsp");
         }
-
+        
     }
 }

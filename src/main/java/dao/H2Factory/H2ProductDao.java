@@ -2,19 +2,26 @@ package dao.H2Factory;
 
 import customerproductorder.models.Product;
 import dao.DaoException;
+import dao.H2Factory.converters.Converting;
+import dao.H2Factory.converters.ProductConverter;
 import dao.ProductDaoInterface;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class H2ProductDao implements ProductDaoInterface {
 
     private final ConnectionProvider connectionProvider;
+    private static final Logger LOG = LoggerFactory.getLogger(H2ProductDao.class);
+    private final Converting<Product> converter;
 
     protected H2ProductDao(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
+        converter = ProductConverter.getInstance();
     }
 
     public void create(Product newProduct) throws DaoException {
@@ -27,6 +34,7 @@ public class H2ProductDao implements ProductDaoInterface {
             st.executeUpdate();
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Inserting data error", ex);
         }
     }
@@ -39,9 +47,10 @@ public class H2ProductDao implements ProductDaoInterface {
                             + ".product where id=?");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
-            gotProduct = this.convertToProduct(rs).get(0);
+            gotProduct = converter.convert(rs).get(0);
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Getting data error", ex);
         }
         return gotProduct;
@@ -54,9 +63,10 @@ public class H2ProductDao implements ProductDaoInterface {
                     .prepareStatement("select * from customerapplication"
                             + ".product");
             ResultSet rs = st.executeQuery();
-            list = this.convertToProduct(rs);
+            list = converter.convert(rs);
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Getting data error", ex);
         }
         return list;
@@ -71,6 +81,7 @@ public class H2ProductDao implements ProductDaoInterface {
             st.executeUpdate();
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Deleting data error", ex);
         }
     }
@@ -85,18 +96,8 @@ public class H2ProductDao implements ProductDaoInterface {
             st.executeUpdate();
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Saving error", ex);
         }
-    }
-
-    private List<Product> convertToProduct(ResultSet rs) throws SQLException {
-        List<Product> list = new ArrayList<Product>();
-        while (rs.next()) {
-            int tempId = rs.getInt("id");
-            String tempName = rs.getString("productname");
-            int tempCost = rs.getInt("productcost");
-            list.add(new Product(tempName, tempCost, tempId));
-        }
-        return list;
     }
 }

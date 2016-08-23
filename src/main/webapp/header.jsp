@@ -10,10 +10,11 @@
 <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">Sign up</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="/login">Login</a></li>
+          <li><a href="list">List</a></li>
+          <li><a href="logout">Logout</a></li>
         </ul>
-        <h3 class="text-muted">Project name</h3>
+        <h3 class="text-muted">CustomerApplication</h3>
       </div>
     </body>
 </html>

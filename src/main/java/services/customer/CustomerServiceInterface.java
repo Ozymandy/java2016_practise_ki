@@ -3,16 +3,17 @@ package services.customer;
 import customerproductorder.models.Customer;
 import dao.DaoException;
 import java.util.List;
+import services.ServiceException;
 
 public interface CustomerServiceInterface {
 
-    public void create(Customer newCustomer) throws DaoException;
+    public void create(Customer newCustomer) throws ServiceException;
 
-    public Customer get(int id) throws DaoException;
+    public Customer get(int id) throws ServiceException;
 
-    public List<Customer> getAll() throws DaoException;
+    public List<Customer> getAll() throws ServiceException;
 
-    public void delete(int id) throws DaoException;
+    public void delete(int id) throws ServiceException;
 
-    public void save(Customer changedCustomer) throws DaoException;
+    public void save(Customer changedCustomer) throws ServiceException;
 }

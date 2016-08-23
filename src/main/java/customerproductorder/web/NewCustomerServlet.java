@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import javax.servlet.http.HttpSession;
+import services.ServiceException;
 import services.customer.CustomerService;
 import services.customer.CustomerServiceInterface;
 
@@ -30,7 +31,7 @@ public class NewCustomerServlet extends HttpServlet {
             service.create(new Customer(req.getParameter("firstName"),
                     req.getParameter("lastName"), req.getParameter("address")));
             resp.sendRedirect("list");
-        } catch (DaoException e) {
+        } catch (ServiceException e) {
             resp.sendRedirect("error.jsp");
         }
 

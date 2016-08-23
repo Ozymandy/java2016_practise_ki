@@ -7,6 +7,7 @@ import dao.UserDaoInterface;
 import java.util.List;
 import services.Encryption.Encrypting;
 import services.Encryption.MD5EncryptService;
+import services.ServiceException;
 
 public class UserService implements UserServiceInterface {
 
@@ -16,7 +17,7 @@ public class UserService implements UserServiceInterface {
 
     private UserService() {
         userdao = H2DaoFactory.getInstance().getUserDao();
-        encryptService = new MD5EncryptService();
+        encryptService = MD5EncryptService.getInstance();
     }
 
     public static UserServiceInterface getInstance() {
@@ -27,39 +28,68 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public void create(User newUser) throws DaoException {
-        userdao.create(newUser);
+    public void create(User newUser) throws ServiceException {
+        try {
+            userdao.create(newUser);
+        } catch (DaoException ex) {
+            throw new ServiceException("Cration error", ex);
+        }
     }
 
     @Override
-    public User get(int id) throws DaoException {
-        return userdao.get(id);
+    public User get(int id) throws ServiceException {
+        try {
+            return userdao.get(id);
+        } catch (DaoException ex) {
+            throw new ServiceException("Getting error", ex);
+        }
     }
 
     @Override
-    public User get(String username) throws DaoException {
-        return userdao.get(username);
+    public User get(String username) throws ServiceException {
+        try {
+            return userdao.get(username);
+        } catch (DaoException ex) {
+            throw new ServiceException("Getting error", ex);
+        }
     }
 
     @Override
-    public List<User> getAll() throws DaoException {
-        return userdao.getAll();
+    public List<User> getAll() throws ServiceException {
+        try {
+            return userdao.getAll();
+        } catch (DaoException ex) {
+            throw new ServiceException("Getting error", ex);
+        }
     }
 
     @Override
-    public void delete(int id) throws DaoException {
-        userdao.delete(id);
+    public void delete(int id) throws ServiceException {
+        try {
+            userdao.delete(id);
+        } catch (DaoException ex) {
+            throw new ServiceException("Deleting error", ex);
+        }
     }
 
     @Override
-    public void save(User changedUser) throws DaoException {
-        userdao.save(changedUser);
+    public void save(User changedUser) throws ServiceException {
+        try {
+            userdao.save(changedUser);
+        } catch (DaoException ex) {
+            throw new ServiceException("Saving error", ex);
+        }
     }
 
     @Override
-    public boolean isValid(User user) throws DaoException {
-        User foundUser = userdao.get(user.getUsername());
-        return foundUser.getPassword().equals(encryptService
-                .encrypt(user.getPassword()));
+    public boolean isValid(User user) throws ServiceException {
+        try {
+            User foundUser;
+            foundUser = userdao.get(user.getUsername());
+            return foundUser.getPassword().equals(encryptService
+                    .encrypt(user.getPassword()));
+        } catch (DaoException ex) {
+            throw new ServiceException("Validation error", ex);
+        }
     }
 }

@@ -3,18 +3,26 @@ package dao.H2Factory;
 import customerproductorder.models.Customer;
 import dao.CustomerDaoInterface;
 import dao.DaoException;
+import dao.H2Factory.converters.Converting;
+import dao.H2Factory.converters.CustomerConverter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class H2CustomerDao implements CustomerDaoInterface {
 
     private final ConnectionProvider connectionProvider;
+    private static final Logger LOG = LoggerFactory
+            .getLogger(H2CustomerDao.class);
+    private Converting<Customer> converter;
 
     protected H2CustomerDao(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
+        converter = CustomerConverter.getInstance();
     }
 
     public void create(Customer newCustomer) throws DaoException {
@@ -28,8 +36,9 @@ public class H2CustomerDao implements CustomerDaoInterface {
             st.setString(3, newCustomer.getAddress());
             st.executeUpdate();
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Inserting data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Inserting data error", ex);
         }
     }
 
@@ -41,10 +50,11 @@ public class H2CustomerDao implements CustomerDaoInterface {
                             + ".customer where id=?");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
-            gotCustomer = this.convertToCustomer(rs).get(0);
+            gotCustomer = converter.convert(rs).get(0);
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Selection data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Selection data error", ex);
         }
         return gotCustomer;
     }
@@ -56,10 +66,11 @@ public class H2CustomerDao implements CustomerDaoInterface {
                     .prepareStatement("select * from customerapplication"
                             + ".customer");
             ResultSet rs = st.executeQuery();
-            set = this.convertToCustomer(rs);
+            set = converter.convert(rs);
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Database connection error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Database connection error", ex);
         }
         return set;
     }
@@ -72,8 +83,9 @@ public class H2CustomerDao implements CustomerDaoInterface {
             st.setInt(1, id);
             st.executeUpdate();
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Deleting data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Deleting data error", ex);
         }
     }
 
@@ -89,21 +101,9 @@ public class H2CustomerDao implements CustomerDaoInterface {
             st.setInt(4, changedCustomer.getCardNumber());
             st.executeUpdate();
             connectionProvider.destroy();
-        } catch (SQLException e) {
-            throw new DaoException("Saving data error", e);
+        } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
+            throw new DaoException("Saving data error", ex);
         }
-    }
-
-    private List<Customer> convertToCustomer(ResultSet rs) throws SQLException {
-        List list = new ArrayList<Customer>();
-        while (rs.next()) {
-            int tempId = rs.getInt("id");
-            String tempLastName = rs.getString("lastname");
-            String tempFirstName = rs.getString("firstname");
-            String tempAddress = rs.getString("address");
-            list.add(new Customer(tempFirstName, tempLastName, tempAddress,
-                    tempId));
-        }
-        return list;
     }
 }

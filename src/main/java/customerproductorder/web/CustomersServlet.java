@@ -1,11 +1,11 @@
 package customerproductorder.web;
 
-import dao.DaoException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import services.ServiceException;
 import services.customer.CustomerService;
 
 public class CustomersServlet extends HttpServlet {
@@ -20,7 +20,7 @@ public class CustomersServlet extends HttpServlet {
             req.setAttribute("customers", service.getAll());
             getServletContext().getRequestDispatcher("/customers.jsp")
                     .forward(req, resp);
-        } catch (DaoException e) {
+        } catch (ServiceException e) {
             resp.sendRedirect("error.jsp");
         }
     }

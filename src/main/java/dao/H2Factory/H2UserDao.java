@@ -2,6 +2,7 @@ package dao.H2Factory;
 
 import customerproductorder.models.User;
 import dao.DaoException;
+import dao.H2Factory.converters.UserConverter;
 import dao.UserDaoInterface;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,13 +10,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class H2UserDao implements UserDaoInterface {
 
     private final ConnectionProvider connectionProvider;
+    private static final Logger LOG = LoggerFactory.getLogger(H2UserDao.class);
+    private final UserConverter converter;
 
     protected H2UserDao(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
+        converter = UserConverter.getInstance();
     }
 
     public void create(User newUser) throws DaoException {
@@ -28,6 +34,7 @@ class H2UserDao implements UserDaoInterface {
             st.executeUpdate();
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Inserting data error", ex);
         }
     }
@@ -39,9 +46,10 @@ class H2UserDao implements UserDaoInterface {
                     + "customerapplication.account where id=?");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
+            gotUser = converter.convert(rs).get(0);
             connectionProvider.destroy();
-            gotUser = this.convertToUser(rs).get(0);
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Select data error", ex);
         }
         return gotUser;
@@ -53,9 +61,10 @@ class H2UserDao implements UserDaoInterface {
             PreparedStatement st = connection.prepareStatement("select * from "
                     + "customerapplication.account");
             ResultSet rs = st.executeQuery();
-            list = this.convertToUser(rs);
+            list = converter.convert(rs);
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Select data error", ex);
         }
         return list;
@@ -69,6 +78,7 @@ class H2UserDao implements UserDaoInterface {
             st.executeUpdate();
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Delete data error", ex);
         }
     }
@@ -84,19 +94,9 @@ class H2UserDao implements UserDaoInterface {
             st.executeUpdate();
             connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Saving data error", ex);
         }
-    }
-
-    private List<User> convertToUser(ResultSet rs) throws SQLException {
-        List list = new ArrayList<User>();
-        while (rs.next()) {
-            int tempId = rs.getInt("id");
-            String username = rs.getString("username");
-            String password = rs.getString("password");
-            list.add(new User(username, password, tempId));
-        }
-        return list;
     }
 
     @Override
@@ -107,8 +107,10 @@ class H2UserDao implements UserDaoInterface {
                     + "customerapplication.account where username=?");
             st.setString(1, username);
             ResultSet rs = st.executeQuery();
-            gotUser = this.convertToUser(rs).get(0);
+            gotUser = converter.convert(rs).get(0);
+            connectionProvider.destroy();
         } catch (SQLException ex) {
+            LOG.error(ex.getSQLState());
             throw new DaoException("Select data error", ex);
         }
         return gotUser;

@@ -8,6 +8,7 @@ package services.users;
 import customerproductorder.models.User;
 import dao.DaoException;
 import java.util.List;
+import services.ServiceException;
 
 /**
  *
@@ -15,17 +16,17 @@ import java.util.List;
  */
 public interface UserServiceInterface {
 
-    public void create(User newUser) throws DaoException;
+    public void create(User newUser) throws ServiceException;
 
-    public User get(int id) throws DaoException;
+    public User get(int id) throws ServiceException;
 
-    public User get(String username) throws DaoException;
+    public User get(String username) throws ServiceException;
 
-    public List<User> getAll() throws DaoException;
+    public List<User> getAll() throws ServiceException;
 
-    public void delete(int id) throws DaoException;
+    public void delete(int id) throws ServiceException;
 
-    public void save(User changedUser) throws DaoException;
+    public void save(User changedUser) throws ServiceException;
 
-    public boolean isValid(User user) throws DaoException;
+    public boolean isValid(User user) throws ServiceException;
 }

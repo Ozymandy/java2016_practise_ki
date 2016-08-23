@@ -8,6 +8,7 @@ import java.io.IOException;
 import customerproductorder.models.Customer;
 import dao.DaoException;
 import javax.servlet.http.HttpSession;
+import services.ServiceException;
 import services.customer.CustomerService;
 
 public class CustomerEditServlet extends HttpServlet {
@@ -30,7 +31,7 @@ public class CustomerEditServlet extends HttpServlet {
             } else {
                 req.getRequestDispatcher("/new").forward(req, resp);
             }
-        } catch (DaoException ex) {
+        } catch (ServiceException ex) {
             resp.sendRedirect("error.jsp");
         }
     }
@@ -38,18 +39,19 @@ public class CustomerEditServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        try{
-        saveCustomer(req);
-        resp.sendRedirect("list");}
-        catch(DaoException e){
+        try {
+            saveCustomer(req);
+            resp.sendRedirect("list");
+        } catch (ServiceException e) {
             resp.sendRedirect("error.jsp");
         }
 
     }
 
-    private void saveCustomer(HttpServletRequest req) throws DaoException{
+    private void saveCustomer(HttpServletRequest req) throws ServiceException {
         HttpSession session = req.getSession(true);
-        int id = (Integer)session.getAttribute("editCustomerId");
+        int id = (Integer) session.getAttribute("editCustomerId");
         service.save(new Customer(req.getParameter("firstName"),
-                req.getParameter("lastName"), req.getParameter("address"),id));}
+                req.getParameter("lastName"), req.getParameter("address"), id));
+    }
 }
