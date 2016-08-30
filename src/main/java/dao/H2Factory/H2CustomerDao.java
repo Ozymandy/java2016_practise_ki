@@ -2,108 +2,72 @@ package dao.H2Factory;
 
 import customerproductorder.models.Customer;
 import dao.CustomerDaoInterface;
-import dao.DaoException;
-import dao.H2Factory.converters.Converting;
-import dao.H2Factory.converters.CustomerConverter;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import dao.H2Factory.utils.CustomerMapper;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+@Repository("h2CustomerDao")
 public class H2CustomerDao implements CustomerDaoInterface {
 
-    private final ConnectionProvider connectionProvider;
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
     private static final Logger LOG = LoggerFactory
             .getLogger(H2CustomerDao.class);
-    private Converting<Customer> converter;
 
-    protected H2CustomerDao(ConnectionProvider connectionProvider) {
-        this.connectionProvider = connectionProvider;
-        converter = CustomerConverter.getInstance();
+    H2CustomerDao() {
     }
 
-    public void create(Customer newCustomer) throws DaoException {
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("insert into customerapplication"
-                            + ".customer(firstname,lastname,"
-                            + "address) values(?,?,?)");
-            st.setString(1, newCustomer.getFirstName());
-            st.setString(2, newCustomer.getName());
-            st.setString(3, newCustomer.getAddress());
-            st.executeUpdate();
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Inserting data error", ex);
-        }
+    public void create(Customer newCustomer) {
+        String query = "insert into customerapplication"
+                + ".customer(firstname,lastname,"
+                + "address) values(:firstname,:lastname,:address)";
+        Map namedParameters = new HashMap();
+        namedParameters.put("firstname", newCustomer.getFirstName());
+        namedParameters.put("lastname", newCustomer.getName());
+        namedParameters.put("address", newCustomer.getAddress());
+        jdbcTemplate.update(query, namedParameters);
     }
 
-    public Customer get(int id) throws DaoException {
-        Customer gotCustomer = null;
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("select * from customerapplication"
-                            + ".customer where id=?");
-            st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-            gotCustomer = converter.convert(rs).get(0);
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Selection data error", ex);
-        }
+    public Customer get(int id) {
+        String query = "select * from customerapplication"
+                + ".customer where id=:customerId";
+        Map namedParameters = new HashMap();
+        namedParameters.put("customerId", id);
+        Customer gotCustomer = (Customer) jdbcTemplate
+                .queryForObject(query, namedParameters, new CustomerMapper());
         return gotCustomer;
     }
 
-    public List<Customer> getAll() throws DaoException {
-        List<Customer> set = new ArrayList<Customer>();
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("select * from customerapplication"
-                            + ".customer");
-            ResultSet rs = st.executeQuery();
-            set = converter.convert(rs);
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Database connection error", ex);
-        }
-        return set;
+    public List<Customer> getAll() {
+        String query = "select * from customerapplication"
+                + ".customer";
+        List<Customer> list = jdbcTemplate.query(query, new CustomerMapper());
+        return list;
     }
 
-    public void delete(int id) throws DaoException {
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("delete from customerapplication"
-                            + ".customer where id=?");
-            st.setInt(1, id);
-            st.executeUpdate();
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Deleting data error", ex);
-        }
+    public void delete(int id) {
+        String query = "delete from customerapplication"
+                + ".customer where id=:customerId";
+        Map namedParameters = new HashMap();
+        namedParameters.put("customerId", id);
+        jdbcTemplate.update(query, namedParameters);
     }
 
-    public void save(Customer changedCustomer) throws DaoException {
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("update customerapplication"
-                            + ".customer set firstname=?,"
-                            + "lastname=?,address=? where id=?");
-            st.setString(1, changedCustomer.getFirstName());
-            st.setString(2, changedCustomer.getName());
-            st.setString(3, changedCustomer.getAddress());
-            st.setInt(4, changedCustomer.getCardNumber());
-            st.executeUpdate();
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Saving data error", ex);
-        }
+    public void save(Customer changedCustomer) {
+        String query = "update customerapplication"
+                + ".customer set firstname=:firstname,"
+                + "lastname=:lastname,address=:address where id=:customerId";
+        Map namedParameters = new HashMap();
+        namedParameters.put("firstname", changedCustomer.getFirstName());
+        namedParameters.put("lastname", changedCustomer.getName());
+        namedParameters.put("address", changedCustomer.getAddress());
+        namedParameters.put("customerId", changedCustomer.getCardNumber());
+        jdbcTemplate.update(query, namedParameters);
     }
 }

@@ -16,17 +16,17 @@ import services.ServiceException;
  */
 public interface UserServiceInterface {
 
-    public void create(User newUser) throws ServiceException;
+    public void create(User newUser);
 
-    public User get(int id) throws ServiceException;
+    public User get(int id);
 
-    public User get(String username) throws ServiceException;
+    public User get(String username);
 
-    public List<User> getAll() throws ServiceException;
+    public List<User> getAll();
 
-    public void delete(int id) throws ServiceException;
+    public void delete(int id);
 
-    public void save(User changedUser) throws ServiceException;
+    public void save(User changedUser);
 
-    public boolean isValid(User user) throws ServiceException;
+    public boolean isValid(User user);
 }

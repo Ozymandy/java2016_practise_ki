@@ -5,13 +5,13 @@ import java.util.List;
 
 public interface CustomerDaoInterface {
 
-    public void create(Customer newCustomer) throws DaoException;
+    public void create(Customer newCustomer);
 
-    public Customer get(int id) throws DaoException;
+    public Customer get(int id);
 
-    public List<Customer> getAll() throws DaoException;
+    public List<Customer> getAll();
 
-    public void delete(int id) throws DaoException;
+    public void delete(int id);
 
-    public void save(Customer changedCustomer) throws DaoException;
+    public void save(Customer changedCustomer);
 }

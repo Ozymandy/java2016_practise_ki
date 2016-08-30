@@ -3,173 +3,122 @@ package dao.H2Factory;
 import customerproductorder.models.Customer;
 import customerproductorder.models.Order;
 import customerproductorder.models.Product;
-import dao.CustomerDaoInterface;
-import dao.DaoException;
-import dao.H2Factory.converters.ProductConverter;
+import dao.H2Factory.utils.OrderMapper;
+import dao.H2Factory.utils.ProductMapper;
 import dao.OrderDaoInterface;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
+@Repository("h2OrderDao")
 public class H2OrderDao implements OrderDaoInterface {
 
-    private final ConnectionProvider connectionProvider;
-    private final CustomerDaoInterface customerDao;
-    private static final Logger LOG = LoggerFactory.getLogger(H2OrderDao.class);
-    private final ProductConverter productConverter;
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
-    protected H2OrderDao(ConnectionProvider connectionProvider,
-            CustomerDaoInterface customerDao) {
-        this.connectionProvider = connectionProvider;
-        this.customerDao = customerDao;
-        productConverter = ProductConverter.getInstance();
+    H2OrderDao() {
     }
 
-    public void create(Order newOrder) throws DaoException {
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("insert into customerapplication."
-                            + "ordertable(customerid,orderdate) values(?,?)");
-            st.setInt(1, newOrder.getCustomer().getCardNumber());
-            st.setDate(2, new java.sql.Date(new Date().getDate()));
-            st.executeUpdate();
-            ResultSet pk = st.getGeneratedKeys();
-            long currentId = 0;
-            if (pk.next()) {
-                currentId = pk.getLong(1);
-            }
-            for (Product product : newOrder.getProducts()) {
-                st = connectionProvider.getConnection().prepareStatement(
-                        "set @idvar = ?; insert into customerapplication"
-                        + ".product_order(orderid,"
-                        + "productid) values(@idvar,?)");
-                st.setLong(1, currentId);
-                st.setInt(2, product.getProductId());
-                st.executeUpdate();
-                connectionProvider.destroy();
-            }
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Inserting data error", ex);
+    public void create(Order newOrder) {
+        String queryOrderTable = "insert into customerapplication."
+                + "ordertable(customerid,orderdate) "
+                + "values(:customerid,:orderdate)";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("customerid", newOrder
+                .getCustomer().getCardNumber());
+        parameters.addValue("orderdate", newOrder.getOrderDate());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(queryOrderTable, parameters, keyHolder,
+                new String[]{"GENERATED_ID"});
+        Number generatedId = keyHolder.getKey();
+        int tempId = generatedId.intValue();
+        String queryProductOrder = "set @idvar = :idvar; insert into "
+                + "customerapplication.product_order(orderid,"
+                + "productid) values(@idvar,:productid)";
+        Map namedParametersProductOrder = new HashMap();
+        for (Product product : newOrder.getProducts()) {
+            namedParametersProductOrder.put("idvar", tempId);
+            namedParametersProductOrder.put(":productid",
+                    product.getProductId());
+            jdbcTemplate.update(queryProductOrder, namedParametersProductOrder);
+            namedParametersProductOrder.clear();
         }
     }
 
-    public List<Order> getAll() throws DaoException {
-        List<Order> list = new ArrayList<Order>();
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("select * from customerapplication"
-                            + ".ordertable");
-            ResultSet rs = st.executeQuery();
-            list = this.convertToOrder(rs);
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Getting data error", ex);
+    public List<Order> getAll() {
+        String queryOrder = "select * from customerapplication.ordertable";
+        List<Order> orders = jdbcTemplate.query(queryOrder, new OrderMapper());
+        for (Order order : orders) {
+            order.addProducts(this.getOrderProducts(order.getOrderId()));
         }
-        return list;
+        return orders;
     }
 
-    public void delete(int id) throws DaoException {
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("delete from customerapplication."
-                            + "ordertable where id=?;"
-                            + "delete from customerapplication."
-                            + "order_product where orderId=?");
-            st.setInt(1, id);
-            st.setInt(2, id);
-            st.executeUpdate();
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Deleting data error", ex);
-        }
+    public void delete(int id) {
+        String queryOrderTable = "delete from customerapplication."
+                + "ordertable where id=:orderid;"
+                + "delete from customerapplication."
+                + "order_product where orderId=:orderid";
+        Map params = new HashMap();
+        params.put("orderid", id);
+        jdbcTemplate.update(queryOrderTable, params);
+
     }
 
-    public void save(Order changedOrder) throws DaoException {
-        try {
-            //TODO implementation of inserting new products in order
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("update customerapplication.ordertable"
-                            + "set orderdate=?,customerid=? where orderid=?");
-            st.setInt(1, changedOrder.getCustomer().getCardNumber());
-            st.setDate(2, new java.sql.Date(changedOrder.getOrderDate()
-                    .getDate()));
-            st.setInt(3, changedOrder.getOrderId());
-            st.executeUpdate();
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Saving error", ex);
-        }
+    public void save(Order changedOrder) {
+        String query = "update customerapplication.ordertable"
+                + "set orderdate=:orderdate,customerid=:customerid "
+                + "where orderid=:orderid";
+        Map params = new HashMap();
+        params.put("orderdate", changedOrder.getOrderDate());
+        params.put("customerid", changedOrder.getCustomer().getCardNumber());
+        params.put("orderid", changedOrder.getOrderId());
+        jdbcTemplate.update(query, params);
     }
 
-    public List<Order> get(Customer customer) throws DaoException {
-        List<Order> list = new ArrayList<Order>();
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("select * "
-                            + "from customerapplication.ordertable where id=?");
-            ResultSet rs = st.executeQuery();
-            list = this.convertToOrder(rs);
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Getting data error", ex);
+    public List<Order> get(Customer customer) {
+        String query = "select * from customerapplication.ordertable"
+                + " where id=:customerid";
+        Map params = new HashMap();
+        params.put("customerid", customer.getCardNumber());
+        List<Order> orders = jdbcTemplate.query(query,
+                params, new OrderMapper());
+        for (Order order : orders) {
+            order.addProducts(this.getOrderProducts(order.getOrderId()));
         }
-        return list;
+        return orders;
     }
 
-    public Order get(int id) throws DaoException {
-        //TODO Optional
-        Order gotOrder = null;
-        try {
-            PreparedStatement st = connectionProvider.getConnection()
-                    .prepareStatement("select * "
-                            + "from customerapplication.ordertable where id=?");
-            ResultSet rs = st.executeQuery();
-            gotOrder = this.convertToOrder(rs).get(0);
-            connectionProvider.destroy();
-        } catch (SQLException ex) {
-            LOG.error(ex.getSQLState());
-            throw new DaoException("Getting data error", ex);
-        }
-        return gotOrder;
+    public Order get(int id) {
+        String query = "select * "
+                + "from customerapplication.ordertable "
+                + "where id=:orderid";
+        Map params = new HashMap();
+        params.put("orderid", id);
+        Order order = (Order) jdbcTemplate.query(query, params,
+                new OrderMapper());
+        order.addProducts(this.getOrderProducts(id));
+        return order;
     }
 
-    private List<Product> getOrderProducts(int orderId) throws SQLException, DaoException {
-        List<Product> list = new ArrayList<Product>();
-        PreparedStatement st = connectionProvider.getConnection()
-                .prepareStatement("select "
-                        + "customerapplication.product.* from "
-                        + "customerapplication.product as product"
-                        + "inner join customerapplication.order_product"
-                        + "as order_product"
-                        + "on product.id = order_product.productid"
-                        + "where order_product.productid=?");
-        st.setInt(1, orderId);
-        ResultSet rs = st.executeQuery();
-        list = productConverter.convert(rs);
-        connectionProvider.destroy();
-        return list;
-    }
-
-    private List<Order> convertToOrder(ResultSet rs) throws SQLException, DaoException {
-        List<Order> list = new ArrayList<Order>();
-        while (rs.next()) {
-            int tempId = rs.getInt("id");
-            Date tempDate = rs.getDate("orderdate");
-            Customer tempCustomer = customerDao
-                    .get(rs.getInt("customerid"));
-            list.add(new Order(tempCustomer, this
-                    .getOrderProducts(tempId), tempId, tempDate));
-        }
-        return list;
+    private List<Product> getOrderProducts(int orderId) {
+        String query = "select "
+                + "customerapplication.product.* from "
+                + "customerapplication.product as product"
+                + "inner join customerapplication.order_product"
+                + "as order_product"
+                + "on product.id = order_product.productid"
+                + "where order_product.productid=:orderid";
+        Map params = new HashMap();
+        params.put("orderid", orderId);
+        List<Product> products = jdbcTemplate.query(query, params,
+                new ProductMapper());
+        return products;
     }
 }

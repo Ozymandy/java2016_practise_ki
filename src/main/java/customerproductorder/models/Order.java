@@ -38,6 +38,12 @@ public class Order {
         this.orderDate = orderDate;
     }
 
+    public Order(Customer customer, int id, Date orderDate) {
+        this.customer = customer;
+        this.id = id;
+        this.orderDate = orderDate;
+    }
+
     /**
      * Our implementation of toString() method
      *
@@ -69,4 +75,8 @@ public class Order {
     public Date getOrderDate() {
         return this.orderDate;
     }
+    public void addProducts(List<Product> products){
+        this.products = products;
+    }
+
 }
