@@ -9,23 +9,29 @@ import dao.OrderDaoInterface;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-@Repository("h2OrderDao")
+@Repository
 public class H2OrderDao implements OrderDaoInterface {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+    @Resource(name = "orderMapper")
+    private RowMapper mapper;
+    @Resource(name = "productMapper")
+    private RowMapper productMapper;
 
     H2OrderDao() {
     }
 
-    public void create(Order newOrder) {
+    public void insertOrderSql(Order newOrder) {
         String queryOrderTable = "insert into customerapplication."
                 + "ordertable(customerid,orderdate) "
                 + "values(:customerid,:orderdate)";
@@ -38,9 +44,9 @@ public class H2OrderDao implements OrderDaoInterface {
                 new String[]{"GENERATED_ID"});
         Number generatedId = keyHolder.getKey();
         int tempId = generatedId.intValue();
-        String queryProductOrder = "set @idvar = :idvar; insert into "
+        String queryProductOrder = "insert into "
                 + "customerapplication.product_order(orderid,"
-                + "productid) values(@idvar,:productid)";
+                + "productid) values(:idvar,:productid)";
         Map namedParametersProductOrder = new HashMap();
         for (Product product : newOrder.getProducts()) {
             namedParametersProductOrder.put("idvar", tempId);
@@ -53,7 +59,7 @@ public class H2OrderDao implements OrderDaoInterface {
 
     public List<Order> getAll() {
         String queryOrder = "select * from customerapplication.ordertable";
-        List<Order> orders = jdbcTemplate.query(queryOrder, new OrderMapper());
+        List<Order> orders = jdbcTemplate.query(queryOrder, mapper);
         for (Order order : orders) {
             order.addProducts(this.getOrderProducts(order.getOrderId()));
         }
@@ -88,7 +94,7 @@ public class H2OrderDao implements OrderDaoInterface {
         Map params = new HashMap();
         params.put("customerid", customer.getCardNumber());
         List<Order> orders = jdbcTemplate.query(query,
-                params, new OrderMapper());
+                params, mapper);
         for (Order order : orders) {
             order.addProducts(this.getOrderProducts(order.getOrderId()));
         }
@@ -102,7 +108,7 @@ public class H2OrderDao implements OrderDaoInterface {
         Map params = new HashMap();
         params.put("orderid", id);
         Order order = (Order) jdbcTemplate.query(query, params,
-                new OrderMapper());
+                mapper);
         order.addProducts(this.getOrderProducts(id));
         return order;
     }
@@ -111,14 +117,14 @@ public class H2OrderDao implements OrderDaoInterface {
         String query = "select "
                 + "customerapplication.product.* from "
                 + "customerapplication.product as product"
-                + "inner join customerapplication.order_product"
+                + " inner join customerapplication.order_product"
                 + "as order_product"
                 + "on product.id = order_product.productid"
                 + "where order_product.productid=:orderid";
         Map params = new HashMap();
         params.put("orderid", orderId);
         List<Product> products = jdbcTemplate.query(query, params,
-                new ProductMapper());
+                productMapper);
         return products;
     }
 }

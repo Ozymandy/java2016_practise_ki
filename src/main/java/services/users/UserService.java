@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import services.Encryption.Encrypting;
 
-@Service("userService")
+@Service
 public class UserService implements UserServiceInterface {
 
     @Autowired

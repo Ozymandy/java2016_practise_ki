@@ -2,23 +2,22 @@ package dao.H2Factory;
 
 import customerproductorder.models.Customer;
 import dao.CustomerDaoInterface;
-import dao.H2Factory.utils.CustomerMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("h2CustomerDao")
+@Repository
 public class H2CustomerDao implements CustomerDaoInterface {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
-    private static final Logger LOG = LoggerFactory
-            .getLogger(H2CustomerDao.class);
+    @Resource(name="customerMapper")
+    private RowMapper mapper;
 
     H2CustomerDao() {
     }
@@ -40,14 +39,14 @@ public class H2CustomerDao implements CustomerDaoInterface {
         Map namedParameters = new HashMap();
         namedParameters.put("customerId", id);
         Customer gotCustomer = (Customer) jdbcTemplate
-                .queryForObject(query, namedParameters, new CustomerMapper());
+                .queryForObject(query, namedParameters, mapper);
         return gotCustomer;
     }
 
     public List<Customer> getAll() {
         String query = "select * from customerapplication"
                 + ".customer";
-        List<Customer> list = jdbcTemplate.query(query, new CustomerMapper());
+        List<Customer> list = jdbcTemplate.query(query, mapper);
         return list;
     }
 

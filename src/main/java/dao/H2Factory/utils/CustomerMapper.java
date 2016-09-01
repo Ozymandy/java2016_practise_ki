@@ -4,7 +4,9 @@ import customerproductorder.models.Customer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+@Component("customerMapper")
 public class CustomerMapper implements RowMapper {
 
     @Override
@@ -13,7 +15,7 @@ public class CustomerMapper implements RowMapper {
         String tempLastName = rs.getString("lastname");
         String tempFirstName = rs.getString("firstname");
         String tempAddress = rs.getString("address");
-        return new Customer(tempFirstName,tempLastName,tempAddress,tempId);
+        return new Customer(tempFirstName, tempLastName, tempAddress, tempId);
     }
 
 }

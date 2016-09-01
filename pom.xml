@@ -17,12 +17,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>4.3.2.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>4.3.2.RELEASE</version>
+            <version>${spring.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -33,12 +33,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>4.3.2.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>    
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>4.3.2.RELEASE</version>
+            <version>${spring.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -80,6 +80,7 @@
     </dependencies>
     <properties>
         <jcl.slf4j.version>1.6.4</jcl.slf4j.version>
+        <spring.version>4.3.2.RELEASE</spring.version>
         <logback.version>1.0.1</logback.version>
         <jetty.http.port>9999</jetty.http.port>
         <maven.compiler.source>1.8</maven.compiler.source>

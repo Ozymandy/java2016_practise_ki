@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+@Component("orderMapper")
 public class OrderMapper implements RowMapper {
 
     @Autowired

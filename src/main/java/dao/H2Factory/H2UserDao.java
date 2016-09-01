@@ -6,15 +6,20 @@ import dao.UserDaoInterface;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("h2UserDao")
+@Repository
 class H2UserDao implements UserDaoInterface {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+    @Resource(name = "customerMapper")
+    private RowMapper mapper;
+
     H2UserDao() {
     }
 
@@ -33,12 +38,12 @@ class H2UserDao implements UserDaoInterface {
                 + "customerapplication.account where id=:accountid";
         Map params = new HashMap();
         params.put("accountid", id);
-        return (User) jdbcTemplate.query(query, params, new UserMapper());
+        return (User) jdbcTemplate.query(query, params, mapper);
     }
 
     public List<User> getAll() {
         String query = "select * from customerapplication.account";
-        return jdbcTemplate.query(query, new UserMapper());
+        return jdbcTemplate.query(query, mapper);
     }
 
     public void delete(int id) {
@@ -66,6 +71,6 @@ class H2UserDao implements UserDaoInterface {
                 + "customerapplication.account where username=:username";
         Map params = new HashMap();
         params.put("username", username);
-        return (User) jdbcTemplate.query(query, params, new UserMapper());
+        return (User) jdbcTemplate.query(query, params, mapper);
     }
 }

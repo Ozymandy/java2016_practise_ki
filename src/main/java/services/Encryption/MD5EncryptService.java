@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.springframework.stereotype.Service;
 
-@Service("md5Service")
+@Service
 public class MD5EncryptService implements Encrypting {
 
     @Override

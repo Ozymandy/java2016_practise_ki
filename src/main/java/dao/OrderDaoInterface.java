@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface OrderDaoInterface {
 
-    public void create(Order newOrder);
+    public void insertOrderSql(Order newOrder);
 
     public List<Order> get(Customer customer);
 

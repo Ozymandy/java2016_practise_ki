@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import services.customer.CustomerServiceInterface;
 import services.product.ProductServiceInterface;
 
-@Service("orderService")
+@Service
 public class OrderService implements OrderServiceInterface {
 
     @Autowired
@@ -36,7 +36,7 @@ public class OrderService implements OrderServiceInterface {
                     && tempProduct.getProductCost() == product.getProductCost();
         }
         if (isValid) {
-            orderDao.create(newOrder);
+            orderDao.insertOrderSql(newOrder);
         }
     }
 

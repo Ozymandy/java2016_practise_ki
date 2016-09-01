@@ -6,15 +6,19 @@ import dao.ProductDaoInterface;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("h2ProductDao")
+@Repository
 public class H2ProductDao implements ProductDaoInterface {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+    @Resource(name="productMapper")
+    private RowMapper mapper;
 
     H2ProductDao() {
     }
@@ -35,14 +39,14 @@ public class H2ProductDao implements ProductDaoInterface {
         Map namedParameters = new HashMap();
         namedParameters.put("productId", id);
         Product gotProduct = (Product) jdbcTemplate
-                .queryForObject(query, namedParameters, new ProductMapper());
+                .queryForObject(query, namedParameters, mapper);
         return gotProduct;
     }
 
     public List<Product> getAll() {
         String query = "select * from customerapplication"
                 + ".product";
-        List<Product> list = jdbcTemplate.query(query, new ProductMapper());
+        List<Product> list = jdbcTemplate.query(query, mapper);
         return list;
     }
 
