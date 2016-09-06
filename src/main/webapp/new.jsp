@@ -11,11 +11,11 @@
             Edit Customer 
         </h1>
 <form action="new" method="POST">
-First Name: <input type="text" name="firstName" value="${requestScope.customer.getFirstName()}"/>
+First Name: <input type="text" name="firstName" value=""/>
 <br />
-Last Name: <input type="text" name="lastName" value="${requestScope.customer.getName()}"/>
+Last Name: <input type="text" name="lastName" value=""/>
 <br />
-Adress: <input type="text" name="address" value="${requestScope.customer.getAddress()}"/>
+Adress: <input type="text" name="address" value=""/>
 <input type="submit" value="New" />
 </form>
     </body>

@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>
-            CustomersList
+            Edit
         </title>
-<link href = "css/bootstrap.min.css" rel = "stylesheet">   
+<link href = "../css/bootstrap.min.css" rel = "stylesheet">   
     </head>
  
     <body>
@@ -12,11 +12,12 @@
             Edit Customer 
         </h1>
 <form action="edit" method="POST">
-First Name: <input type="text" name="firstName" value="${customer.getFirstName()}"/>
+<input type="hidden" name="id" value="${param.id}"/>
+First Name: <input type="text" name="firstName" value="${item.getFirstName()}"/>
 <br />
-Last Name: <input type="text" name="lastName" value="${customer.getName()}"/>
+Last Name: <input type="text" name="lastName" value="${item.getName()}"/>
 <br />
-Adress: <input type="text" name="address" value="${customer.getAddress()}"/>
+Adress: <input type="text" name="address" value="${item.getAddress()}"/>
 <input type="submit" value="Save" />
 </form>
     </body>

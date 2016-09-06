@@ -15,7 +15,7 @@
 <input type="submit" value="Search" />
 </form>
 <ul>
-<c:forEach var='item' items='${requestScope.results}' varStatus='counter'>
+<c:forEach var='item' items='${list}' varStatus='counter'>
   <li> <c:out value='${item.toString()}'/></li>
 </c:forEach>
 </ul>

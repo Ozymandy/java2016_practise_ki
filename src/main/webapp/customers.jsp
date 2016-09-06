@@ -6,6 +6,7 @@ pageEncoding="ISO-8859-1"%>
         <title>
             CustomersList
         </title>
+<link href = "../css/bootstrap.min.css" rel = "stylesheet">
     </head>
  
     <body>
@@ -14,7 +15,7 @@ pageEncoding="ISO-8859-1"%>
         </h1>
 <ul>
 <c:forEach var='item' items='${list}' varStatus='counter'>
-  <li> <c:out value='${item.toString()}'/> <a href="edit?cardId=${item.getCardNumber()}">Edit</a></li>
+  <li> <c:out value='${item.toString()}'/> <a href="edit?id=${item.getCardNumber()}">Edit</a></li>
 </c:forEach>
 </ul>
     </body>
