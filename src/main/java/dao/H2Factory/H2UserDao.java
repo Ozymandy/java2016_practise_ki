@@ -17,7 +17,7 @@ class H2UserDao implements UserDaoInterface {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
-    @Resource(name = "customerMapper")
+    @Resource(name = "userMapper")
     private RowMapper mapper;
 
     H2UserDao() {
@@ -38,7 +38,7 @@ class H2UserDao implements UserDaoInterface {
                 + "customerapplication.account where id=:accountid";
         Map params = new HashMap();
         params.put("accountid", id);
-        return (User) jdbcTemplate.query(query, params, mapper);
+        return (User) jdbcTemplate.queryForObject(query, params, mapper);
     }
 
     public List<User> getAll() {
@@ -71,6 +71,6 @@ class H2UserDao implements UserDaoInterface {
                 + "customerapplication.account where username=:username";
         Map params = new HashMap();
         params.put("username", username);
-        return (User) jdbcTemplate.query(query, params, mapper);
+        return (User) jdbcTemplate.queryForObject(query, params, mapper);
     }
 }

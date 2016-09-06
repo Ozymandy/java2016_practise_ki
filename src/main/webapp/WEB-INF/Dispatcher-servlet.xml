@@ -11,6 +11,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <context:component-scan base-package="dao" />
     <context:component-scan base-package="services" />
     <mvc:annotation-driven />
+    	<mvc:interceptors>
+      <bean class="customerproductorder.web.interceptors.LoginInterceptor" />
+	</mvc:interceptors> 
     <bean
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="suffix">
